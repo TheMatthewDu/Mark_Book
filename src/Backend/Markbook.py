@@ -1,73 +1,13 @@
 import csv
+import json
 from src.Backend.DataReader import DataReader
-from src.Backend.DataInput import DataInput
 from src.Backend.DataObject import DataObject
-from typing import Tuple, Any
+
 
 DESCRIPTION = 'DESCRIPTION'
 CURRENT_MARK = "CURRENT MARK"
 GOAL = 'GOAL'
 NON_DATA_VALUES = [DESCRIPTION, CURRENT_MARK, GOAL]
-
-
-def _create_backup(name: str) -> None:
-    """ Create a backup of the previous state of the files
-
-    :param: name: the name of the course for the backup
-    """
-    # Quick Backup
-    filename = f"DataFiles\\{name}.csv"
-    backup = open(f'BACKUPS\\{name}_BACKUP.csv', 'w')
-    file = open(filename, 'r')
-
-    backup_read = file.read()
-    backup.write(backup_read)
-
-    file.close()
-    backup.close()
-
-
-def read(name_file: str) -> DataObject:
-    """ Reads the data with the course name name_file
-
-    :param: name_file: the name of the course
-    :return: A DataObject of the data
-    """
-    # Quick Backup
-    filename = f"DataFiles\\{name_file}.csv"
-    reader = DataReader(filename)
-
-    _create_backup(name_file)
-
-    return reader.get_data()
-
-
-def write_data(data: DataObject, filename: str) -> None:
-    """ Writes the data into the specified file
-
-    :param: data: the data object where the data is stored
-    :param: filename: the name of the file to be written
-    """
-    # Get a list of items to be written
-    writing_list = data.sort_for_writing(filename)
-
-    # opening the csv file in 'w+' mode
-    file = open(f"DataFiles\\{filename}.csv", 'w+', newline='')
-
-    # writing the data into the file
-    with file:
-        write = csv.writer(file)
-        write.writerows(writing_list)
-
-    file.close()
-
-
-def analyze_data(storage: DataObject) -> None:
-    """ Print the analysis of the grade on the storage object
-
-    :param: storage: the DataObject storing the information
-    """
-    print(storage.generate_analysis())
 
 
 def check_course_code(code: str) -> str:
@@ -91,40 +31,65 @@ def check_course_code(code: str) -> str:
     return copy_of_code
 
 
-def main() -> None:
-    """ The main body of the function. Runs all the components """
-    entry_message = '*** THIS IS THE MARK BOOK *** \n CREATED BY MATTHEW DU \n' \
-                    'ALL FILES ARE OPEN AND WRITTEN AS CSV FILES. \n PLEASE ' \
-                    'USE THE PROPER TEMPLATE FOR THE DATA'
+def _create_backup(name: str) -> None:
+    """ Create a backup of the previous state of the files
 
-    print(entry_message)
+    :param name: the name of the course for the backup
+    :return: None
+    """
+    # Quick Backup
+    filename = f"DataFiles\\{name}.json"
+    backup = open(f'BACKUPS\\{name}_BACKUP.json', 'w')
+    file = open(filename, 'r')
 
-    file = input("Enter Course Name: ")
-    filename = check_course_code(file)
-    data = read(filename)
+    backup_read = json.load(file)
+    json.dump(backup_read, backup)
 
-    data_input = DataInput(data)
-    data_input.input_data()
-
-    write_data(data, filename)
-    analyze_data(data)
-
-
-def gui_read(file: str) -> DataObject:
-    """ The main body of the function. Runs all the components """
-    filename = check_course_code(file)
-    return read(filename)
+    file.close()
+    backup.close()
 
 
-def gui_input(data: Tuple[Any, Any, Any], data_obj: DataObject):
-    data_input = DataInput(data_obj)
-    return data_input.gui_input_data(data)
+def read(name_file: str) -> DataObject:
+    """ Reads the data with the course name name_file
+
+    :param name_file: the name of the course
+    :return: A DataObject of the data
+    """
+    # Quick Backup
+    filename = f"DataFiles\\{name_file}"
+    reader = DataReader(filename)
+
+    _create_backup(name_file)
+
+    return reader.get_data()
 
 
-def gui_write(data, filename):
-    write_data(data, filename)
+def write_data(data: DataObject, filename: str) -> None:
+    """ Writes the data into the specified file
+
+    :param data: the data object where the data is stored
+    :param filename: the name of the file to be written
+    :return: None
+    """
+    # opening the csv file in 'w+' mode
+    storage_file = open(f"DataFiles\\{filename}.json", 'w')
+    json.dump(data.get_storage(), storage_file)
+    storage_file.close()
+
+    weights_file = open(f"DataFiles\\{filename}_weights.json", 'w')
+    json.dump(data.get_weights(), weights_file)
+    weights_file.close()
 
 
-if __name__ == '__main__':
-    main()
-    input('Press Enter to Exit: ')
+def analyze_data(storage: DataObject) -> None:
+    """ Print the analysis of the grade on the storage object
+
+    :param storage: the DataObject storing the information
+    :return: None
+    """
+    print(storage.generate_analysis())
+
+
+def load_json(data: dict, course_name: str):
+    file = open(f"DataFiles\\{course_name}.json", "w")
+    json.dump(data, file)

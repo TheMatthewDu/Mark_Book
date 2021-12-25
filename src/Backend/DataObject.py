@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Union
 import numpy as np
 
 DESCRIPTION = 'DESCRIPTION'
@@ -179,12 +179,15 @@ class DataObject:
 
         self._pseudo_weights = new_weights
 
-    def get_storage(self) -> Dict[str, List[Tuple[str, float]]]:
+    def get_storage(self) -> Dict[str, Union[List[Tuple[str, float]], float]]:
         """ Get the storage dict
 
         :return: the storage dict
         """
-        return self._storage
+        temp = self._storage.copy()
+        temp[GOAL] = self._goal
+        temp[CURRENT_MARK] = self._current_mark
+        return temp
 
     def get_weights(self) -> Dict[str, float]:
         """ Get the weight dict

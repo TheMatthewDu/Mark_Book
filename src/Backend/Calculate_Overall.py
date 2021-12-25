@@ -5,70 +5,6 @@ from typing import List, TextIO
 NON_DATA_VALUES = ['DESCRIPTION', 'CURRENT MARK', 'GOAL']
 
 
-def is_number(value: str) -> bool:
-    """Return True if and only if value represents a decimal number.
-
-    >>> is_number('csc108')
-    False
-    >>> is_number('  108 ')
-    True
-    >>> is_number('+3.14159')
-    True
-    """
-
-    return value.strip().lstrip('-+').replace('.', '', 1).isnumeric()
-
-
-def clean_data(data: List[list]) -> None:
-    """Convert each string in data to an int if and only if it represents a
-    whole number, and a float if and only if it represents a number that is not
-    a whole number.
-
-    >>> d = [['abc', '123', '45.6', 'car', 'Bike']]
-    >>> clean_data(d)
-    >>> d
-    [['abc', 123, 45.6, 'car', 'Bike']]
-    >>> d = [['ab2'], ['-123'], ['BIKES', '3.2'], ['3.0', '+4', '-5.0']]
-    >>> clean_data(d)
-    >>> d
-    [['ab2'], [-123], ['BIKES', 3.2], [3, 4, -5]]
-    """
-
-    new_data = []
-    for item in data:
-        sub_new_data = []
-        for it in item:
-            sign_log = False
-            sign = ''
-            if is_number(it):
-                if it[0] == '+' or it[0] == '-':
-                    sign_log = True
-                    sign += it[0]
-                    a = it[1:]
-                else:
-                    a = it
-
-                if float(a) % 1 == 0:
-                    if sign_log:
-                        sub_new_data.append(int(float(sign + a)))
-                    else:
-                        sub_new_data.append(int(float(a)))
-                else:
-                    if sign_log:
-                        sub_new_data.append(float(sign + a))
-                    else:
-                        sub_new_data.append(float(a))
-
-            else:
-                sub_new_data.append(it)
-
-        new_data.append(sub_new_data)
-
-    data.clear()
-
-    data += new_data
-
-
 def csv_to_list(csv_file: TextIO) -> List[List[str]]:
     """Read and return the contents of the open CSV file csv_file as a list of
     lists, where each inner list contains the values from one line of csv_file.
@@ -90,7 +26,6 @@ def get_storage_dict(file: TextIO) -> dict:
     """
     # Clean the data
     contents = csv_to_list(file)
-    clean_data(contents)
 
     # Empty dicts
     storage = {}
@@ -139,7 +74,7 @@ def _get_dict_average(dictionary: dict):
     accumulator = 0
     for entry in dictionary:
         if dictionary[entry] != '':
-            accumulator += dictionary[entry]
+            accumulator += float(dictionary[entry])
             num += 1
 
     return accumulator / num
@@ -149,7 +84,7 @@ def main():
     # Create a dictionary of all the averages of the courses
     average_dict = {}
 
-    directory = 'src\\Datafiles'
+    directory = 'Datafiles'
     for filename in os.listdir(directory):
         if _is_course(filename):
             file = open(f"{directory}\\{filename}")
@@ -160,7 +95,7 @@ def main():
 
     # Write the info to file
     output_filename = 'Overall Averages.txt'
-    output = open(output_filename, 'w')
+    output = open(f"Backend\\{output_filename}", 'w')
 
     for average in average_dict:
         avg = average_dict[average]
