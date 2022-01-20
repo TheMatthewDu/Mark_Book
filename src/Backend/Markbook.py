@@ -38,7 +38,7 @@ def _create_backup(name: str) -> None:
     :return: None
     """
     # Quick Backup
-    filename = f"DataFiles\\{name}.json"
+    filename = f"DataFiles\\Data\\{name}.json"
     backup = open(f'BACKUPS\\{name}_BACKUP.json', 'w')
     file = open(filename, 'r')
 
@@ -56,8 +56,7 @@ def read(name_file: str) -> DataObject:
     :return: A DataObject of the data
     """
     # Quick Backup
-    filename = f"DataFiles\\{name_file}"
-    reader = DataReader(filename)
+    reader = DataReader(name_file)
 
     _create_backup(name_file)
 
@@ -71,12 +70,11 @@ def write_data(data: DataObject, filename: str) -> None:
     :param filename: the name of the file to be written
     :return: None
     """
-    # opening the csv file in 'w+' mode
-    storage_file = open(f"DataFiles\\{filename}.json", 'w')
+    storage_file = open(f"DataFiles\\Data\\{filename}.json", 'w')
     json.dump(data.get_storage(), storage_file)
     storage_file.close()
 
-    weights_file = open(f"DataFiles\\{filename}_weights.json", 'w')
+    weights_file = open(f"DataFiles\\Weights\\{filename}_weights.json", 'w')
     json.dump(data.get_weights(), weights_file)
     weights_file.close()
 
@@ -91,5 +89,5 @@ def analyze_data(storage: DataObject) -> None:
 
 
 def load_json(data: dict, course_name: str):
-    file = open(f"DataFiles\\{course_name}.json", "w")
+    file = open(f"{course_name}.json", "w")
     json.dump(data, file)

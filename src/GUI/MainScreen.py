@@ -79,6 +79,7 @@ class MainScreen(AbstractScreen):
         screen = CreateCourseScreen(self.controller)
         screen.display()
 
+
 if __name__ == "__main__":
     app = MainScreen()
     app.display()

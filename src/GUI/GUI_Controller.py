@@ -43,5 +43,5 @@ class GUIController:
             data[item] = []
             weights[item] = keys[item]
 
-        Markbook.load_json(data, filename)
-        Markbook.load_json(weights, f"{filename}_weights")
+        Markbook.load_json(data, f"Datafiles\\Data\\{filename}")
+        Markbook.load_json(weights, f"Datafiles\\Weights\\{filename}_weights")

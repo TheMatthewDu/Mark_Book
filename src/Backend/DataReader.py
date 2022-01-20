@@ -28,7 +28,7 @@ class DataReader:
 
         :return: None
         """
-        storage_file = open(f"{self.filename}.json")
+        storage_file = open(f"DataFiles\\Data\\{self.filename}.json")
         self.storage = json.load(storage_file)
         self.goal = self.storage.get(GOAL)
         self.current = self.storage.get(CURRENT_MARK)
@@ -40,7 +40,7 @@ class DataReader:
 
         :return: None
         """
-        weights_file = open(f"{self.filename}_weights.json")
+        weights_file = open(f"DataFiles\\Weights\\{self.filename}_weights.json")
         temp = json.load(weights_file)
         self.weights = temp
 
