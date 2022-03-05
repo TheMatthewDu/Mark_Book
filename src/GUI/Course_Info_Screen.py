@@ -1,5 +1,6 @@
 from __future__ import annotations
 from tkinter import *
+import tkinter.font as font
 from src.GUI.AnalysisScreen import AnalysisScreen
 from src.GUI.SelectionScreen import SelectionScreen
 from src.GUI.GUI_Controller import GUIController
@@ -17,21 +18,21 @@ class CourseInfoScreen(AbstractScreen):
 
         # =========================== Labels and Entries =======================
         self._course_name_label = \
-            Label(self.window, text="Course Name", font=self.font)
+            Label(self.window, text="Course Name", font=font.Font(size=18))
 
-        self._course_name_entry = Entry(self.window, font=self.font)
+        self._course_name_entry = Entry(self.window, font=font.Font(size=18))
 
         # ============================== Buttons ===============================
         self._entry_button = \
-            Button(self.window, text="Add Entry", font=self.button_font,
+            Button(self.window, text="Add Entry", font=font.Font(size=16),
                    command=self.add_entry_to_mark_book)
 
         self._analysis_button = \
-            Button(self.window, text="Show Analysis", font=self.button_font,
+            Button(self.window, text="Show Analysis", font=font.Font(size=16),
                    command=self.display_analysis)
 
         self._exit_button = \
-            Button(self.window, text="Exit", font=self.button_font,
+            Button(self.window, text="Exit", font=font.Font(size=16),
                    command=self.window.destroy)
 
         # =============================== Placements ===========================
@@ -43,6 +44,7 @@ class CourseInfoScreen(AbstractScreen):
 
     def add_entry_to_mark_book(self):
         try:
+            self.controller.clear()
             self.controller.calibrate(self._course_name_entry.get())
             data = self.controller.get_data()
             SelectionScreen(data, self.controller).display()

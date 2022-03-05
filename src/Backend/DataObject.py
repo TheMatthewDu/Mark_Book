@@ -79,6 +79,7 @@ class DataObject:
             if self._storage[entry_group]:
                 total += calculate_mark(self._storage[entry_group],
                                         self._pseudo_weights[entry_group])
+        self._current_mark = total
 
     def sort_for_writing(self, file_name: str) -> List[Tuple[str, str]]:
         """ Sort Storage For writing """

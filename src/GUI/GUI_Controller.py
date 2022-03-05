@@ -9,6 +9,10 @@ class GUIController:
         self.name = None
         self.data = None
 
+    def clear(self):
+        self.name = None
+        self.data = None
+
     def calibrate(self, name: str):
         if not self.is_calibrated():
             self.name = name

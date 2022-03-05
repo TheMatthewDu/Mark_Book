@@ -49,10 +49,10 @@ def main():
 
     output.write(f'OVERALL AVERAGE: {round(total_average, 2)}')
 
-    if round(total_average, 2) < 80:
-        output.write(f'\nDanger! Below Goal by {round(80 - total_average, 2)}%')
+    if round(total_average, 2) < 85:
+        output.write(f'\nDanger! Below Goal by {round(85 - total_average, 2)}%')
     else:
-        output.write(f'\nGood. Above Goal by {round(total_average - 80, 2)}%')
+        output.write(f'\nGood. Above Goal by {round(total_average - 85, 2)}%')
 
     output.close()
 

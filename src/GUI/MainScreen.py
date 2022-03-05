@@ -8,6 +8,7 @@ from src.GUI.TotalsScreen import TotalsScreen
 from src.GUI.CreateCourseScreen import CreateCourseScreen
 import tkinter.font as font
 
+
 class MainScreen(AbstractScreen):
     def __init__(self) -> None:
         AbstractScreen.__init__(self)
@@ -21,19 +22,19 @@ class MainScreen(AbstractScreen):
                   font=('Helvetica', 18, 'bold'))
 
         self._entry_button = \
-            Button(self.window, text="Add Entry", font=self.button_font,
+            Button(self.window, text="Add Entry", font=font.Font(size=16),
                    command=self.add_entry_to_mark_book)
 
         self._totals_button = \
-            Button(self.window, text="Show Totals", font=self.button_font,
+            Button(self.window, text="Show Totals", font=font.Font(size=16),
                    command=self.show_totals)
 
         self._exit_button = \
-            Button(self.window, text="Exit", font=self.button_font,
+            Button(self.window, text="Exit", font=font.Font(size=16),
                    command=self.window.destroy)
 
         self._creation_button = \
-            Button(self.window, text="Create", font=self.button_font,
+            Button(self.window, text="Create", font=font.Font(size=16),
                    command=self.create_all)
 
         # =============================== Placements ===========================
@@ -44,17 +45,19 @@ class MainScreen(AbstractScreen):
         self._exit_button.grid(row=5, column=0)
 
     def add_entry_to_mark_book(self):
+        self.controller.clear()
         screen = CourseInfoScreen(self.controller)
         screen.display()
 
-    def display_analysis(self):
-        try:
-            self.controller.calibrate(self._course_name_entry.get())
-            analysis = self.controller.generate_analysis()
-            screen = AnalysisScreen(analysis)
-            screen.display()
-        except FileNotFoundError:
-            ErrorScreen("Course Not Found. Try again!").display()
+    # def display_analysis(self):
+    #     self.controller.clear()
+    #     try:
+    #         self.controller.calibrate(self._course_name_entry.get())
+    #         analysis = self.controller.generate_analysis()
+    #         screen = AnalysisScreen(analysis)
+    #         screen.display()
+    #     except FileNotFoundError:
+    #         ErrorScreen("Course Not Found. Try again!").display()
 
     def show_totals(self):
         try:
@@ -65,6 +68,7 @@ class MainScreen(AbstractScreen):
             ErrorScreen("File Not Found. Try again!").display()
 
     def create_all(self):
+        self.controller.clear()
         screen = CreateCourseScreen(self.controller)
         screen.display()
 
