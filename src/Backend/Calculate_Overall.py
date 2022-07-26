@@ -54,6 +54,7 @@ def main():
     else:
         output.write(f'\nGood. Above Goal by {round(total_average - 85, 2)}%')
 
+    output.flush()
     output.close()
 
 

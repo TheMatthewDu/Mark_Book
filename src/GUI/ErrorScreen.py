@@ -4,7 +4,20 @@ from src.GUI.AbstractScreen import AbstractScreen
 
 
 class ErrorScreen(AbstractScreen):
-    def __init__(self, message: str):
+    """ The Error Screen
+
+    === Attributes ===
+    :ivar _message: The error message
+    :ivar _confirmation: The confirmation message
+    """
+    _message: Label
+    _confirmation: Button
+
+    def __init__(self, message: str) -> None:
+        """ Initializer
+
+        :param message: The error message
+        """
         AbstractScreen.__init__(self)
         self._message = Label(self.window, text=message, font=self.font)
 

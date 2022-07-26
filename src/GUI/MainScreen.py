@@ -1,33 +1,51 @@
 from tkinter import *
-from src.GUI.AnalysisScreen import AnalysisScreen
-from src.GUI.Course_Info_Screen import CourseInfoScreen
-from src.GUI.GUI_Controller import GUIController
+# from src.GUI.AnalysisScreen import AnalysisScreen
+from src.GUI.CourseInfoScreen import CourseInfoScreen
+from src.GUI.GUIController import GUIController
 from src.GUI.AbstractScreen import AbstractScreen
-from src.GUI.Error_Screen import ErrorScreen
+from src.GUI.ErrorScreen import ErrorScreen
 from src.GUI.TotalsScreen import TotalsScreen
 from src.GUI.CreateCourseScreen import CreateCourseScreen
 import tkinter.font as font
 
 
 class MainScreen(AbstractScreen):
+    """ The main screen for the MarkBook GUI
+
+    === Attributes ===
+    :ivar controller: The GUI controller of the system
+    :ivar _welcome: The label for the screen to welcome
+    :ivar _entry_button: The button to move to the CourseInfoScreen
+    :ivar _totals_button: The button to move to the TotalsScreen
+    :ivar _exit_button: The button to exit the program
+    :ivar _creation_button: The button to move to the CreateCourseScreen
+    """
+    controller: GUIController
+    _welcome: Label
+    _entry_button: Button
+    _totals_button: Button
+    _exit_button: Button
+    _creation_button: Button
+
     def __init__(self) -> None:
+        """ Initializer """
         AbstractScreen.__init__(self)
 
         self.controller = GUIController()
 
         # =========================== Labels and Entries =======================
-        self.welcome = \
+        self._welcome = \
             Label(self.window,
                   text="Welcome to the Mark book!\nPlease Select your action.",
                   font=('Helvetica', 18, 'bold'))
 
         self._entry_button = \
             Button(self.window, text="Add Entry", font=font.Font(size=16),
-                   command=self.add_entry_to_mark_book)
+                   command=self.launch_course_info_screen)
 
         self._totals_button = \
             Button(self.window, text="Show Totals", font=font.Font(size=16),
-                   command=self.show_totals)
+                   command=self.launch_totals_screen)
 
         self._exit_button = \
             Button(self.window, text="Exit", font=font.Font(size=16),
@@ -35,40 +53,39 @@ class MainScreen(AbstractScreen):
 
         self._creation_button = \
             Button(self.window, text="Create", font=font.Font(size=16),
-                   command=self.create_all)
+                   command=self.launch_create_course_screen)
 
         # =============================== Placements ===========================
-        self.welcome.grid(row=1, column=1)
+        self._welcome.grid(row=1, column=1)
         self._entry_button.grid(row=4, column=0)
         self._totals_button.grid(row=4, column=1)
         self._creation_button.grid(row=4, column=2)
         self._exit_button.grid(row=5, column=0)
 
-    def add_entry_to_mark_book(self):
-        self.controller.clear()
+    def launch_course_info_screen(self) -> None:
+        """ Launch the course information screen
+
+        :return: Nothing. Launches the course info screen
+        """
         screen = CourseInfoScreen(self.controller)
         screen.display()
 
-    # def display_analysis(self):
-    #     self.controller.clear()
-    #     try:
-    #         self.controller.calibrate(self._course_name_entry.get())
-    #         analysis = self.controller.generate_analysis()
-    #         screen = AnalysisScreen(analysis)
-    #         screen.display()
-    #     except FileNotFoundError:
-    #         ErrorScreen("Course Not Found. Try again!").display()
+    def launch_totals_screen(self) -> None:
+        """ Launch the totals screen
 
-    def show_totals(self):
+        :return: Nothing. Launch the totals screen
+        """
         try:
-            analysis = self.controller.get_totals()
-            screen = TotalsScreen(analysis)
+            screen = TotalsScreen(self.controller)
             screen.display()
         except FileNotFoundError:
             ErrorScreen("File Not Found. Try again!").display()
 
-    def create_all(self):
-        self.controller.clear()
+    def launch_create_course_screen(self) -> None:
+        """ Launch the create course screen
+
+        :return: Nothing. Launches the create course screen
+        """
         screen = CreateCourseScreen(self.controller)
         screen.display()
 

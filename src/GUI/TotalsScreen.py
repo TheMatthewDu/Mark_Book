@@ -1,13 +1,30 @@
 from __future__ import annotations
 from tkinter import *
 from src.GUI.AbstractScreen import AbstractScreen
+from src.GUI.GUIController import GUIController
 
 
 class TotalsScreen(AbstractScreen):
-    def __init__(self, text: str):
-        AbstractScreen.__init__(self)
+    """ The screen to display the screens of the totals of all entries
 
-        self._totals_label = Label(self.window, text=text, font=self.font)
+    === Attributes ===
+    :ivar controller: The GUI controller
+    :ivar _totals_label: The label for the totals
+    :ivar _exit_button: The button to exit the totals screen
+    """
+    controller: GUIController
+    _totals_label: Label
+    _exit_button: Button
+
+    def __init__(self, controller: GUIController) -> None:
+        """ Initializer
+
+        :param controller: The GUI Controller
+        """
+        AbstractScreen.__init__(self)
+        self.controller = controller
+
+        self._totals_label = Label(self.window, text=self.controller.get_totals(), font=self.font)
 
         self._exit_button = \
             Button(self.window, text="Exit", font=self.button_font,
@@ -18,5 +35,5 @@ class TotalsScreen(AbstractScreen):
 
 
 if __name__ == "__main__":
-    screen = TotalsScreen("Hi")
+    screen = TotalsScreen(GUIController())
     screen.display()

@@ -1,6 +1,5 @@
-from src.Backend import Markbook
 from src.Backend import Calculate_Overall
-from src.Backend.DataInput import DataInput
+from Backend.Controller import Controller
 
 
 def check_course_code(code: str) -> str:
@@ -24,26 +23,24 @@ def check_course_code(code: str) -> str:
     return copy_of_code
 
 
-def main() -> None:
+def run_cmd_line() -> None:
     """ The main body of the function. Runs all the components """
-    entry_message = '*** THIS IS THE MARK BOOK *** \n CREATED BY MATTHEW DU \n' \
-                    'ALL FILES ARE OPEN AND WRITTEN AS CSV FILES. \n PLEASE ' \
-                    'USE THE PROPER TEMPLATE FOR THE DATA'
+    entry_message = "MarkBook Application\n" \
+                    "Created By Matthew Du\n" \
+                    "Enter `mb-help` for full instructions\n"
 
     print(entry_message)
 
-    file = input("Enter Course Name: ")
-    filename = check_course_code(file)
-    data = Markbook.read(filename)
-
-    data_input = DataInput(data)
-    data_input.input_data()
-
-    Markbook.write_data(data, filename)
-    Markbook.analyze_data(data)
+    running = True
+    factory = Controller()
+    while running:
+        cmd = input("MarkBook > ").strip().split(sep=" ")
+        response = factory.process_command(cmd[0], cmd[1:])
+        if response is not None:
+            print(response)
 
 
 if __name__ == "__main__":
-    main()
+    run_cmd_line()
     Calculate_Overall.main()
     input('Press Enter to Exit: ')

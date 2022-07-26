@@ -1,6 +1,6 @@
 import json
-from src.Backend.DataReader import DataReader
-from src.Backend.DataObject import DataObject
+from Backend.Commands.DataReaderCmd import DataReaderCmd
+from Backend.Entities import MarkBookObject
 
 
 DESCRIPTION = 'DESCRIPTION'
@@ -48,21 +48,21 @@ def _create_backup(name: str) -> None:
     backup.close()
 
 
-def read(name_file: str) -> DataObject:
+def read(name_file: str) -> MarkBookObject:
     """ Reads the data with the course name name_file
 
     :param name_file: the name of the course
     :return: A DataObject of the data
     """
     # Quick Backup
-    reader = DataReader(name_file)
+    reader = DataReaderCmd(name_file)
 
     _create_backup(name_file)
 
     return reader.get_data()
 
 
-def write_data(data: DataObject, filename: str) -> None:
+def write_data(data: MarkBookObject, filename: str) -> None:
     """ Writes the data into the specified file
 
     :param data: the data object where the data is stored
@@ -70,7 +70,7 @@ def write_data(data: DataObject, filename: str) -> None:
     :return: None
     """
     storage_file = open(f"DataFiles\\Data\\{filename}.json", 'w')
-    json.dump(data.get_storage(), storage_file)
+    json.dump(data.get_data(), storage_file)
     storage_file.close()
 
     weights_file = open(f"DataFiles\\Weights\\{filename}_weights.json", 'w')
@@ -78,7 +78,7 @@ def write_data(data: DataObject, filename: str) -> None:
     weights_file.close()
 
 
-def analyze_data(storage: DataObject) -> None:
+def analyze_data(storage: MarkBookObject) -> None:
     """ Print the analysis of the grade on the storage object
 
     :param storage: the DataObject storing the information
@@ -86,7 +86,3 @@ def analyze_data(storage: DataObject) -> None:
     """
     print(storage.generate_analysis())
 
-
-def load_json(data: dict, course_name: str):
-    file = open(f"{course_name}.json", "w")
-    json.dump(data, file)

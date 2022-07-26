@@ -1,22 +1,29 @@
-from tkinter import *
+import tkinter as tkt
 from typing import List, Tuple
 from src.GUI.AbstractScreen import AbstractScreen
+from src.GUI.GUIController import GUIController
 
 
 class AnalysisScreen(AbstractScreen):
     """ Create a table object
 
     === Public Attributes ===
-    entry: tkinker Entry
+    :ivar entry: tkinker Entry
     """
-    entry: Entry
+    entry: tkt.Entry
 
-    def __init__(self, lst: List[Tuple[str, str]]):
+    def __init__(self, controller: GUIController):
         """ Initializer
 
         Precondition: lst is a valid input where the first entry is the title
         """
         AbstractScreen.__init__(self)
+
+        self.controller = controller
+
+        data = self.controller.generate_analysis().split(sep='\n')
+        analysis_message = data.pop(-1)
+        lst = [item.split(sep=': ') for item in data if item != '']
 
         # Get the table size
         total_rows = len(lst)
@@ -31,17 +38,20 @@ class AnalysisScreen(AbstractScreen):
                 # Title
                 if i == 0:
                     self.entry = \
-                        Entry(self.window, width=20, fg='Black',
-                              font=('Arial', 16, "bold"))
+                        tkt.Entry(self.window, width=20, fg='Black',
+                                  font=('Arial', 16, "bold"))
                 # Entry
                 else:
-                    self.entry = Entry(self.window, width=20, fg='Black',
-                                       font=self.font)
+                    self.entry = tkt.Entry(self.window, width=20, fg='Black', font=self.font)
                 # Create the table
                 self.entry.grid(row=i, column=j)
-                self.entry.insert(END, lst[i][j])
+                self.entry.insert(tkt.END, lst[i][j])
+
+        self.entry = tkt.Entry(self.window, width=20, fg='Black', font=self.font)
+        self.entry.insert(tkt.END, analysis_message)
+        self.entry.grid(row=total_rows, column=total_columns - 2)
 
         button = \
-            Button(self.window, text="Exit", font=self.button_font,
-                   command=self.window.destroy)
-        button.grid(row=total_rows, column=total_columns)
+            tkt.Button(self.window, text="Exit", font=self.button_font,
+                       command=self.window.destroy)
+        button.grid(row=total_rows, column=total_columns - 1)

@@ -1,16 +1,39 @@
 from tkinter import *
-from src.Backend.DataObject import DataObject
-from src.GUI.GUI_Controller import GUIController
+from src.GUI.GUIController import GUIController
 from src.GUI.AnalysisScreen import AnalysisScreen
 from src.GUI.AbstractScreen import AbstractScreen
 
 
 class SelectionScreen(AbstractScreen):
-    def __init__(self, data_obj: DataObject, controller: GUIController) -> None:
+    """ The course Selection Screen
+
+    === Attributes ===
+    :ivar controller: The GUI controller
+    :ivar _assignment_type_label: The label for the assignment type dropdown
+    :ivar _description_label: The label for the description of the mark entry
+    :ivar _mark_label: The label for the mark entry bar
+    :ivar _assignment_type_entry: The dropdown bar for the assignment type
+    :ivar _drop_down: The dropdown menu object for the assignment type
+    :ivar _description_entry: The entry bar for the description of the mark
+    :ivar _mark_entry: The entry bar for the mark
+    :ivar _submit_button: The button to submit the form
+    :ivar _exit_button: The button to exit the screen
+    """
+    controller: GUIController
+    _assignment_type_label: Label
+    _description_label: Label
+    _mark_label: Label
+    _assignment_type_entry: StringVar
+    _drop_down: OptionMenu
+    _description_entry: Entry
+    _mark_entry: Entry
+    _submit_button: Button
+    _exit_button: Button
+
+    def __init__(self, controller: GUIController) -> None:
         AbstractScreen.__init__(self)
 
         # ===================== Things passed on ===============================
-        self.data_obj = data_obj
         self.controller = controller
 
         # =============================== Labels ===============================
@@ -23,11 +46,11 @@ class SelectionScreen(AbstractScreen):
         self._mark_label = Label(self.window, text="Mark", font=self.font)
 
         # ============================= Entries ================================
-        self.assignment_type_entry = StringVar(name="Select")
+        self._assignment_type_entry = StringVar(name="Select")
 
-        list_of_entries = self.data_obj.to_list()
+        list_of_entries = self.controller.get_list_elements().split(sep=',')
         self._drop_down = \
-            OptionMenu(self.window, self.assignment_type_entry,
+            OptionMenu(self.window, self._assignment_type_entry,
                        *list_of_entries)
 
         self._description_entry = Entry(self.window, font=self.font)
@@ -37,7 +60,7 @@ class SelectionScreen(AbstractScreen):
         # ================================ Buttons =============================
         self._submit_button = \
             Button(self.window, text="Submit", font=self.button_font,
-                   command=self.send_response)
+                   command=self.submit_button_callback)
 
         self._exit_button = \
             Button(self.window, text="Exit", font=self.button_font,
@@ -53,29 +76,33 @@ class SelectionScreen(AbstractScreen):
         self._submit_button.grid(row=4, column=0)
         self._exit_button.grid(row=4, column=1)
 
-    def send_response(self):
-        response = (self.assignment_type_entry.get(),
-                    self._description_entry.get(),
-                    self._mark_entry.get())
+    def submit_button_callback(self) -> None:
+        """ The callback function for the actions after the submit button is pressed
 
+        :return: Nothing
+        """
         # Get and display the response data
-        value = self.controller.enter_data(response)
-        confirm_message = Label(self.window, text=value, font=self.font)
+        self.controller.enter_data(self._assignment_type_entry.get(), self._description_entry.get(), self._mark_entry.get())
+        confirm_message = Label(self.window, text=f"Now inputting {self._mark_entry.get()}%", font=self.font)
 
         # Display a confirm button
         confirm_button = \
             Button(self.window, text="Ok", font=self.button_font,
-                   command=self.generate_analysis)
+                   command=self.launch_analysis_screen)
 
+        # Position the new buttons and labels
         confirm_message.grid(row=5, column=0)
         confirm_button.grid(row=6, column=0)
 
-    def generate_analysis(self):
-        self.controller.write_data()
-        analysis = self.controller.generate_analysis()
-        analysis_screen = AnalysisScreen(analysis)
+    def launch_analysis_screen(self) -> None:
+        """ Launch the analysis screen
+
+        :return: Nothing. Launch the analysis screen
+        """
+        analysis_screen = AnalysisScreen(self.controller)
         analysis_screen.display()
 
 
 if __name__ == "__main__":
-    pass
+    screen = SelectionScreen(GUIController())
+    screen.display()
