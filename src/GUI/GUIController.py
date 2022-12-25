@@ -1,5 +1,5 @@
 from typing import Optional, Dict
-from src.Backend.Controller import Controller
+from Controllers.Controller import Controller
 
 GROUP = "Group"
 DESCRIPTION = "Description"
