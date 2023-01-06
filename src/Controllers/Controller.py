@@ -26,7 +26,7 @@ def _create_command(command: str, args: Optional[List[str]] = None) -> Command:
     }
 
     args_commands = {
-        CMD_SET: (DataReaderCmd, 1, "usage: setup <filename>.json")
+        CMD_SET: (DataReaderCmd, 1)
     }
 
     if command in arg_less_commands:
@@ -34,7 +34,6 @@ def _create_command(command: str, args: Optional[List[str]] = None) -> Command:
     elif command in args_commands:
         info = args_commands[command]
         if args is None or len(args) != info[1]:
-            print(info[2])  # TODO Remove dependency on print for gui
             raise ValueError
         else:
             return info[0](*args)

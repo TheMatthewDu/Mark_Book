@@ -13,3 +13,6 @@ To start, begin with the `App.py`,
 
 If the python `Tkinter` package is not installed in your computer, you may use 
 the Command Line application by running `CommandLine.py`
+
+## Next Steps
+Currently, working to convert backend into SQL database to improve space efficiency and speed
