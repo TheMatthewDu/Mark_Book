@@ -34,7 +34,7 @@ def _create_command(command: str, args: Optional[List[str]] = None) -> Command:
     elif command in args_commands:
         info = args_commands[command]
         if args is None or len(args) != info[1]:
-            print(info[2])
+            print(info[2])  # TODO Remove dependency on print for gui
             raise ValueError
         else:
             return info[0](*args)
@@ -123,7 +123,10 @@ class Controller:
         """
         if isinstance(command, CreateCmd):
             self.data = MarkBookObject("", {GOAL: 0.0, CURRENT_MARK: 0.0}, {})
-            cmd_input = command.generate_prompt(self.data)
+            if inputs is None:
+                cmd_input = command.generate_prompt(self.data)
+            else:
+                cmd_input = inputs
         elif self.data is None:
             return "Data not set"
         elif inputs is None:

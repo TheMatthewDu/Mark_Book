@@ -29,10 +29,8 @@ def main():
         run_app()
     except ModuleNotFoundError:
         run_cmd_line()
-        input('Press Enter to Exit: ')
 
 
 if __name__ == "__main__":
-    # main()
-    run_cmd_line()
-    input('Press Enter to Exit: ')
+    main()
+    # run_cmd_line()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict, Union, Optional
 import json
+import re
 
 from Commands.AbstractClasses import RequirePrompt
 from Entities import MarkBookObject
@@ -17,6 +18,26 @@ def load_json(data: dict, course_name: str) -> None:
     file = open(f"{course_name}.json", "w+")
     json.dump(data, file)
     file.close()
+
+
+def check_course_code(code: str) -> str:
+    """ Check if the code is valid. Fix if not
+
+    :param: code: the code entered by the user
+
+    :return: a correctly formatted course code
+    """
+    if not re.match("([A-Z]|[a-z]){3}\\d{3}(H|h|)(1|3|5|)$", code):
+        raise FileNotFoundError
+
+    copy_of_code = code
+    if copy_of_code[:3].islower():
+        copy_of_code = copy_of_code[:3].upper() + copy_of_code[3:]
+    if len(copy_of_code) == 6:
+        copy_of_code = copy_of_code + 'H1'
+    if copy_of_code[:-2] == 'h1':
+        copy_of_code = copy_of_code[:-2] + 'H1'
+    return copy_of_code
 
 
 class CreateCmd(RequirePrompt):
@@ -43,7 +64,9 @@ class CreateCmd(RequirePrompt):
         """
         prompt_data = {
             COURSE_NAME: input("Enter Course Name: "),
-            GOAL: input("Enter goal: ")
+            GOAL: input("Enter goal: "),
+            DATA: [],
+            WEIGHT: []
         }
 
         total_weight = 0.0
@@ -63,8 +86,8 @@ class CreateCmd(RequirePrompt):
             if include_weight == "exit":
                 break
 
-            prompt_data[f"{DATA}{n}"] = include_name
-            prompt_data[f"{WEIGHT}{n}"] = include_weight
+            prompt_data[DATA].append(include_name)
+            prompt_data[WEIGHT].append(include_weight)
 
             n += 1
             total_weight += float(include_weight)
@@ -80,14 +103,18 @@ class CreateCmd(RequirePrompt):
 
         self.storage_dict = {CURRENT_MARK: 100.0, GOAL: float(self._raw_data[GOAL])}
         self.weights_dict = {}
-        for n in range((len(self._raw_data.keys()) - 4) // 2 + 1):
-            entry_name = self._raw_data[f"{DATA}{n}"]
+
+        data_lst = self._raw_data[DATA]
+        weight_lst = self._raw_data[WEIGHT]
+        for n in range(len(data_lst)):
+            entry_name = data_lst[n]
 
             self.storage_dict[entry_name] = []
-            self.weights_dict[entry_name] = float(self._raw_data[f"{WEIGHT}{n}"])
+            self.weights_dict[entry_name] = float(weight_lst[n])
 
-        load_json(self.storage_dict, f"data\\Data\\{self._raw_data[COURSE_NAME]}")
-        load_json(self.weights_dict, f"data\\Weights\\{self._raw_data[COURSE_NAME]}_weights")
+        course_name = check_course_code(self._raw_data[COURSE_NAME])
+        load_json(self.storage_dict, f"data\\Data\\{course_name}")
+        load_json(self.weights_dict, f"data\\Weights\\{course_name}_weights")
 
     def set_mark_book_object(self) -> MarkBookObject:
         return MarkBookObject(self._raw_data[COURSE_NAME], self.storage_dict, self.weights_dict)

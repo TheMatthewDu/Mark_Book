@@ -49,7 +49,7 @@ class MainScreen(AbstractScreen):
 
         self._exit_button = \
             Button(self.window, text="Exit", font=font.Font(size=16),
-                   command=self.window.destroy)
+                   command=self.process_exit)
 
         self._creation_button = \
             Button(self.window, text="Create", font=font.Font(size=16),
@@ -88,6 +88,10 @@ class MainScreen(AbstractScreen):
         """
         screen = CreateCourseScreen(self.controller)
         screen.display()
+
+    def process_exit(self):
+        self.controller.commit_changes()
+        self.window.destroy()
 
 
 if __name__ == "__main__":

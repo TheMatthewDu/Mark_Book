@@ -1,5 +1,5 @@
 from tkinter import *
-from typing import List, Dict
+from typing import List, Tuple
 
 from src.GUI.GUIController import GUIController
 from src.GUI.AbstractScreen import AbstractScreen
@@ -113,27 +113,27 @@ class CreateCourseScreen(AbstractScreen):
         self._names.append(new_name_entry)
         self._weights.append(new_desc_entry)
 
-    def _get_inputs_dict(self) -> Dict[str, str]:
+    def _get_inputs_list(self) -> List[Tuple[str, str]]:
         """ Generates the input dictionary based on the form data
 
         :return: THe input dictionary, which is a dictionary of the entry name to the weight
         """
-        input_dict = {}
+        input_list = []
         for i in range(len(self._names)):
-            curr_weight = self._weights[i].get()
             curr_name = self._names[i].get()
+            curr_weight = self._weights[i].get()
 
             if curr_weight != '':
-                input_dict[curr_name] = curr_weight
+                input_list.append((curr_name, curr_weight))
 
-        return input_dict
+        return input_list
 
     def send_response(self) -> None:
         """ Processes the form and creates the .json file
 
         :return: Nothing
         """
-        info = self._get_inputs_dict()
+        info = self._get_inputs_list()
         self.controller.create_course(info, self._course_name_entry.get(), self._goal_entry.get())
         self.window.destroy()
 

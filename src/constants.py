@@ -21,7 +21,7 @@ WEIGHT = "WEIGHT"
 CURRENT_MARK = "CURRENT MARK"
 
 NON_DATA_VALUES = [DESCRIPTION, CURRENT_MARK, GOAL]
-WEIGHTS = 'WEIGHTS'
+WEIGHTS = 'WEIGHTS'  # TODO Why is there weight and weights as two different constants?
 
 NAME = "NAME"
 ENTRIES = "ENTRIES"
